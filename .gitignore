@@ -1,0 +1,39 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# ── Virtual environment ───────────────────────────────────────────────────────
+.venv
+
+# ── YOLO training runs (large files — don't push to GitHub) ──────────────────
+runs/
+
+# ── Downloaded model weights (auto-downloaded on first run) ──────────────────
+*.pt
+
+# ── EasyOCR cache ─────────────────────────────────────────────────────────────
+.EasyOCR/
+
+# ── Dataset images (too large for GitHub) ────────────────────────────────────
+raw_data/images/
+dataset/images/
+
+# ── Output results (generated files, not source code) ────────────────────────
+output/
+
+# ── Dataset cache files created by YOLO ──────────────────────────────────────
+dataset/labels/**/*.cache
+*.cache
+
+# ── OS files ─────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── IDE files ─────────────────────────────────────────────────────────────────
+.vscode/settings.json
+.idea/

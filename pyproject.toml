@@ -1,0 +1,14 @@
+[project]
+name = "comp-vision-project"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "easyocr>=1.7.2",
+    "ipykernel>=7.2.0",
+    "numpy==1.26.4",
+    "opencv-python>=4.11.0.86",
+    "pillow>=12.2.0",
+    "ultralytics>=8.4.35",
+]
