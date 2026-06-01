@@ -1,0 +1,26 @@
+# Backend Python dependencies
+# Install all with: pip install -r requirements.txt
+
+# Web framework — handles HTTP requests/responses
+fastapi==0.111.0
+
+# ASGI server — runs the FastAPI app
+uvicorn[standard]==0.29.0
+
+# For reading uploaded files in FastAPI
+python-multipart==0.0.9
+
+# Database ORM — lets Python talk to SQLite without raw SQL
+sqlalchemy==2.0.30
+
+# Computer Vision — image reading and preprocessing
+opencv-python==4.9.0.80
+
+# OCR engine — reads text from images
+easyocr==1.7.1
+
+# YOLOv8 — object detection model
+ultralytics==8.2.0
+
+# Scientific computing (used by OpenCV and EasyOCR internally)
+numpy==1.26.4

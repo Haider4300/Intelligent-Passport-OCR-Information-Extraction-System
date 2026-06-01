@@ -1,0 +1,167 @@
+/* src/index.css */
+/* ================
+   Global styles + Tailwind v4 import.
+   Tailwind v4 uses @import instead of @tailwind directives.
+   Custom colors are defined as CSS variables here,
+   because Tailwind v4 no longer supports theme() in CSS files.
+*/
+
+@import "tailwindcss";
+
+/* ─── CUSTOM THEME COLORS (as CSS variables) ─────────────────────────────── */
+/* These replace tailwind.config.js custom colors for use in plain CSS.       */
+/* In JSX files you still use Tailwind classes like bg-[#16161f] directly.    */
+:root {
+  /* ink palette */
+  --ink-50:  #f0f0f4;
+  --ink-100: #e0e0e8;
+  --ink-200: #c2c2d0;
+  --ink-300: #9393a8;
+  --ink-400: #6b6b80;
+  --ink-500: #4a4a5a;
+  --ink-600: #363645;
+  --ink-700: #252532;
+  --ink-800: #16161f;
+  --ink-900: #0d0d14;
+  --ink-950: #08080e;
+
+  /* accent (mint green) */
+  --accent:     #7fffb2;
+  --accent-dim: #4dd97a;
+
+  /* gold */
+  --gold: #f5c842;
+}
+
+/* ─── BASE STYLES ─────────────────────────────────────────────────────────── */
+body {
+  background-color: #08080e;
+  color: #e0e0e8;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  /* Top green glow */
+  background-image: radial-gradient(ellipse 80% 80% at 50% -20%, rgba(127,255,178,0.07) 0%, transparent 60%);
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Syne', system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ─── REUSABLE COMPONENT CLASSES ──────────────────────────────────────────── */
+
+/* Card */
+.card {
+  background-color: #0d0d14;
+  border: 1px solid #252532;
+  border-radius: 1rem;
+}
+
+/* Field label (small uppercase monospace) */
+.field-label {
+  font-size: 0.75rem;
+  font-family: 'DM Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6b6b80;
+}
+
+/* Field value (large monospace data) */
+.field-value {
+  font-size: 1.125rem;
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+  color: #f0f0f4;
+  letter-spacing: 0.05em;
+}
+
+/* Primary button */
+.btn-primary {
+  background-color: #7fffb2;
+  color: #08080e;
+  font-family: 'Syne', system-ui, sans-serif;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s, transform 0.1s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.btn-primary:hover  { background-color: #4dd97a; }
+.btn-primary:active { transform: scale(0.95); }
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Ghost/outline button */
+.btn-ghost {
+  border: 1px solid #363645;
+  color: #9393a8;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.btn-ghost:hover {
+  border-color: #6b6b80;
+  color: #f0f0f4;
+}
+
+/* ─── SHIMMER LOADING EFFECT ──────────────────────────────────────────────── */
+/* Used on skeleton loaders while OCR is processing */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.shimmer-bg {
+  background: linear-gradient(
+    90deg,
+    #16161f 25%,
+    #252532 50%,
+    #16161f 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite;
+}
+
+/* ─── FADE UP ANIMATION ───────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  0%   { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0);    }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.5s ease-out forwards;
+}
+
+/* ─── PULSE RING ANIMATION ────────────────────────────────────────────────── */
+@keyframes pulse_ring {
+  0%, 100% { opacity: 1;   }
+  50%       { opacity: 0.4; }
+}
+
+.animate-pulse-ring {
+  animation: pulse_ring 2s ease-in-out infinite;
+}
+
+/* ─── CUSTOM SCROLLBAR ────────────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0d0d14; }
+::-webkit-scrollbar-thumb { background: #363645; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #4a4a5a; }
+
+/* ─── SPIN ANIMATION (used by loading spinners) ───────────────────────────── */
+@keyframes spin {
+  from { transform: rotate(0deg);   }
+  to   { transform: rotate(360deg); }
+}
