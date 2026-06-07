@@ -1,125 +1,73 @@
-# 🛂 Passport OCR — Computer Vision Project
-# Author: Ali Haider (AI-Engineer)
+<div align="center">
 
-Automatically extract structured information from passport images using **YOLOv8** for region detection and **EasyOCR** for text recognition.
+# 🛂 Intelligent Passport OCR — Information Extraction System
 
-**Output fields:** `passport_number` · `name` · `date_of_birth` · `nationality`
+**Automatically extract structured data from passport images using AI**
+
+[![Python](https://img.shields.io/badge/Python-3.10-blue?style=flat-square&logo=python)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
+[![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)](https://react.dev)
+[![YOLOv8](https://img.shields.io/badge/YOLOv8-Ultralytics-FF6B35?style=flat-square)](https://ultralytics.com)
+[![EasyOCR](https://img.shields.io/badge/EasyOCR-1.7-green?style=flat-square)](https://github.com/JaidedAI/EasyOCR)
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
+
+*Author: **Ali Haider** — 
 
 ---
 
-## 🧠 How It Works
+![PassportOCR Demo](https://raw.githubusercontent.com/Haider4300/Intelligent-Passport-OCR-Information-Extraction-System/main/frontend/src/assets/hero.png)
+
+</div>
+
+---
+
+## 📌 Overview
+
+A full-stack AI web application that extracts passport information automatically from uploaded images. Upload a passport photo and get structured data back in seconds — no manual entry needed.
+
+**Extracted fields:**
+- 🔢 Passport Number
+- 👤 Full Name
+- 🎂 Date of Birth
+- 🌍 Nationality
+
+**How it works:**
+1. **YOLOv8** detects the passport number region with a bounding box
+2. **EasyOCR** reads text from the detected region and full image
+3. **MRZ Parser** extracts all fields from the Machine Readable Zone (bottom two lines)
+4. **Regex fallback** fills any field the MRZ parser missed
+5. Results saved to **SQLite database** and displayed in the web UI
+
+---
+
+## 🧠 AI Pipeline
 
 ```
 Passport Image
-      ↓
-YOLOv8n  ── detects the passport number bounding box
-      ↓
-EasyOCR  ── reads text from the detected region
-      ↓
-Regex parser ── extracts name, DOB, nationality from full image
-      ↓
-results.json / results.csv
-```
-
----
-
-## 📁 Project Structure
-
-```
-comp-vision-project/
-├── raw_data/
-│   ├── images/          # Original passport images (50 images)
-│   └── lables/          # YOLO annotation .txt files (from LabelImg)
-├── dataset/
-│   ├── images/
-│   │   ├── train/       # 80% split (40 images)
-│   │   └── val/         # 20% split (10 images)
-│   ├── labels/
-│   │   ├── train/
-│   │   └── val/
-│   └── data.yaml        # YOLO dataset config
-├
-│
-├── runs/                # Training results (auto-generated, not in git)
-├── output/              # Extracted results JSON + CSV
-├── prepare_dataset.py   # Step 1 — organize raw data into train/val
-├── train.py             # Step 2 — train YOLOv8 on passport dataset
-├── extract.py           # Step 3 — detect + OCR all passport fields
-├── main.py              # Unified entry point
-├── requirements.txt
-└── README.md
-```
-
----
-
-## ⚙️ Setup
-
-**1. Clone the repo**
-```bash
-git clone https://github.com/YOUR_USERNAME/comp-vision-project.git
-cd comp-vision-project
-```
-
-**2. Create a virtual environment and install dependencies**
-```bash
-python -m venv .venv
-.venv\Scripts\activate        # Windows
-# source .venv/bin/activate   # macOS / Linux
-
-pip install -r requirements.txt
-```
-
-**Or with uv (faster):**
-```bash
-uv sync
-```
-
----
-
-## 🚀 Usage
-
-All steps run through `main.py`:
-
-### Step 1 — Prepare dataset
-Organizes `raw_data/` into YOLO-compatible `dataset/` structure with 80/20 train/val split.
-```bash
-python main.py prepare
-```
-
-### Step 2 — Train
-Trains a YOLOv8n model to detect passport number regions.
-```bash
-python main.py train
-```
-Training takes ~30–60 minutes on CPU. Best model saved to `runs/train/passport_detector/weights/best.pt`.
-
-### Step 3 — Extract
-Runs YOLO detection + EasyOCR on passport images and saves results.
-```bash
-# Single image
-python main.py extract --image raw_data/images/passport.jpg
-
-# Entire folder
-python main.py extract --folder raw_data/images/
-```
-
----
-
-## 📤 Output
-
-Results are saved to `output/` as both JSON and CSV:
-
-```json
-[
-  {
-    "image": "(1).jpeg",
-    "passport_number": "AB1234579",
-    "name": "Mohammed Rashid Anwar",
-    "dob": "13 JUL 1982",
-    "nationality": "BGD",
-    "yolo_confidence": 0.89
-  }
-]
+      │
+      ├─► YOLOv8n ──────────► Crop passport number region
+      │                              │
+      │                              ▼
+      │                        EasyOCR (cropped)
+      │                              │
+      ├─► Crop bottom 22% ──► EasyOCR (MRZ zone)
+      │                              │
+      │                              ▼
+      │                        MRZ Parser
+      │                        ┌─────────────────┐
+      │                        │ passport_number  │
+      │                        │ name             │
+      │                        │ date_of_birth    │
+      │                        │ nationality      │
+      │                        └─────────────────┘
+      │                              │
+      └─► Full image fallback ───────┘
+                    │
+                    ▼
+             SQLite Database
+                    │
+                    ▼
+             React Web UI
 ```
 
 ---
@@ -127,46 +75,206 @@ Results are saved to `output/` as both JSON and CSV:
 ## 📊 Model Performance (YOLOv8n)
 
 | Metric | Score |
-|--------|-------|
-| mAP@50 | 99.5% |
-| mAP@50-95 | 60.6% |
-| Precision | 99.4% |
-| Recall | 100% |
-| Inference speed | 135ms / image (CPU) |
+|---|---|
+| mAP@50 | **99.5%** |
+| mAP@50-95 | **60.6%** |
+| Precision | **99.4%** |
+| Recall | **100%** |
+| Inference speed | **135ms / image (CPU)** |
 
-Trained on 50 passport images · 100 epochs · Intel Core i5-8365U CPU
+> Trained on 50 passport images · 66 epochs (early stop) · Intel Core i5-8365U
+
+---
+
+## 🗂️ Project Structure
+
+```
+Intelligent-Passport-OCR-Information-Extraction-System/
+│
+├── backend/                        ← FastAPI Python backend
+│   ├── main.py                     ← API server + static file serving
+│   ├── ocr_service.py              ← YOLO + EasyOCR + MRZ parsing logic
+│   ├── database.py                 ← SQLite setup (auto-created on run)
+│   ├── models.py                   ← Pydantic response schemas
+│   └── requirements.txt            ← Python dependencies
+│
+├── frontend/                       ← React + Vite + Tailwind CSS
+│   ├── src/
+│   │   ├── App.jsx                 ← Root component (state + layout)
+│   │   ├── main.jsx                ← React entry point
+│   │   ├── index.css               ← Global styles
+│   │   ├── api/index.js            ← All backend API calls
+│   │   └── components/
+│   │       ├── UploadZone.jsx      ← Drag-and-drop image upload
+│   │       ├── ResultCard.jsx      ← Extracted data display
+│   │       ├── ProcessingOverlay.jsx ← Loading animation
+│   │       ├── HistoryTable.jsx    ← Past scans table
+│   │       └── StatusBanner.jsx    ← Backend health indicator
+│   ├── index.html
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   └── package.json
+│
+├── raw_data/
+│   └── lables/                     ← YOLO annotation .txt files
+│
+├── dataset/
+│   └── data.yaml                   ← YOLO dataset config
+│
+├── prepare_dataset.py              ← Step 1: organize data into train/val
+├── train.py                        ← Step 2: train YOLOv8
+├── extract.py                      ← Step 3: CLI extraction script
+├── main.py                         ← Unified CLI entry point
+├── Dockerfile                      ← Google Cloud Run deployment
+├── cloudbuild.yaml                 ← CI/CD auto-deploy config
+└── requirements.txt
+```
+
+---
+
+## ⚙️ Local Setup
+
+### Prerequisites
+- Python 3.10+
+- Node.js 18+
+- Git
+
+### Step 1 — Clone the repo
+
+```bash
+git clone https://github.com/Haider4300/Intelligent-Passport-OCR-Information-Extraction-System.git
+cd Intelligent-Passport-OCR-Information-Extraction-System
+```
+
+### Step 2 — Backend setup
+
+```bash
+cd backend
+
+# Create virtual environment
+python -m venv .venv
+
+# Activate it
+.venv\Scripts\activate        # Windows
+source .venv/bin/activate     # macOS / Linux
+
+# Install dependencies (~5-10 min, EasyOCR + PyTorch are large)
+pip install -r requirements.txt
+```
+
+### Step 3 — Frontend setup
+
+```bash
+cd frontend
+npm install
+```
+
+### Step 4 — Train the YOLO model
+
+```bash
+# From repo root (with venv active)
+python main.py prepare   # organize dataset
+python main.py train     # train YOLOv8 (~30-60 min on CPU)
+```
+
+> Model saved to: `runs/train/passport_detector/weights/best.pt`
+
+---
+
+## 🚀 Running the App
+
+Open **two terminals** simultaneously:
+
+**Terminal 1 — Backend:**
+```bash
+cd backend
+source ../.venv/Scripts/activate   # Git Bash (Windows)
+uvicorn main:app --reload --port 8000
+```
+
+Expected output:
+```
+✅ YOLO model loaded from: ...\best.pt
+✅ EasyOCR ready.
+✅ All models loaded. Server is ready!
+INFO: Uvicorn running on http://127.0.0.1:8000
+```
+
+**Terminal 2 — Frontend:**
+```bash
+cd frontend
+npm run dev
+```
+
+Open **http://localhost:5173** in your browser.
+
+---
+
+## 🖥️ Features
+
+| Feature | Description |
+|---|---|
+| 📤 Drag & Drop Upload | Upload passport images by dragging or clicking |
+| 🤖 AI Extraction | YOLOv8 + EasyOCR + MRZ parsing pipeline |
+| 🟢 Live Status | Green/yellow/red backend health indicator |
+| 📋 Scan History | All past scans saved to SQLite database |
+| 📊 Stats Dashboard | Total scans, success count, success rate |
+| 📥 Export CSV | Download all history as Excel-compatible CSV |
+| 📄 Export PDF | Print-ready report via browser print dialog |
+| 🗑️ Delete Records | Delete individual or all scan records |
+| 📱 Responsive | Works on desktop and mobile |
+
+---
+
+## 🔌 API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/health` | Backend + model status |
+| `POST` | `/api/extract` | Upload image → extracted data |
+| `GET` | `/api/history` | All past scans |
+| `GET` | `/api/history/{id}` | Single scan details |
+| `DELETE` | `/api/history/{id}` | Delete a scan |
+
+Interactive docs: **http://localhost:8000/docs**
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Tool | Purpose |
-|------|---------|
-| [YOLOv8](https://github.com/ultralytics/ultralytics) | Passport number region detection |
-| [EasyOCR](https://github.com/JaidedAI/EasyOCR) | Text recognition from detected regions |
-| [LabelImg](https://github.com/HumanSignal/labelImg) | Manual bounding box annotation |
-| OpenCV | Image loading and preprocessing |
-| Python 3.11 | Core language |
+| Layer | Technology |
+|---|---|
+| Object Detection | YOLOv8n (Ultralytics) |
+| OCR Engine | EasyOCR |
+| MRZ Parsing | Custom regex pipeline |
+| Backend | FastAPI + SQLite + SQLAlchemy |
+| Frontend | React 18 + Vite + Tailwind CSS |
+| Image Processing | OpenCV + NumPy |
 
 ---
 
-## 🔮 Roadmap
+## 🗄️ Database
 
-- [ ] Expand dataset to 200+ images for better recall
-- [ ] Add MRZ (Machine Readable Zone) detection as a second class
-- [ ] Improve OCR accuracy with image preprocessing (deskew, sharpen)
-- [ ] Build a simple web UI with Flask or Streamlit
-- [ ] Export model to ONNX for faster CPU inference
+Uses **SQLite** — no separate server needed. The file `backend/passport_ocr.db` is auto-created on first run and stores all scan records permanently.
 
 ---
 
 ## ⚠️ Privacy Notice
 
-The passport images used in this project are for educational purposes only.
+This project is for **educational purposes only**. Passport images used during development are sample/test images. Never upload real passport data to untrusted services. The database is local to your machine.
 
 ---
 
 ## 📄 License
 
-Internal project. All rights reserved by the authors.
+MIT License — see [LICENSE](LICENSE) for details.
 
+---
+
+<div align="center">
+
+Built with ❤️ by **Ali Haider** · AI Engineer
+
+*YOLOv8 + EasyOCR + FastAPI + React*
+
+</div>
