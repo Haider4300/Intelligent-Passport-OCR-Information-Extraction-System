@@ -33,7 +33,7 @@ A full-stack AI web application that extracts passport information automatically
 
 **How it works:**
 1. **YOLOv8** detects the passport number region with a bounding box
-2. **EasyOCR** reads text from the detected region and full image
+2. **EasyOCR** reads text from the detected region and the full image
 3. **MRZ Parser** extracts all fields from the Machine Readable Zone (bottom two lines)
 4. **Regex fallback** fills any field the MRZ parser missed
 5. Results saved to **SQLite database** and displayed in the web UI
