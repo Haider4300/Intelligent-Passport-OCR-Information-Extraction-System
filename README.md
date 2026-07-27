@@ -179,7 +179,7 @@ python main.py train     # train YOLOv8 (~30-60 min on CPU)
 
 > Model saved to: `runs/train/passport_detector/weights/best.pt`
 
----
+----
 
 ## 🚀 Running the App
 
