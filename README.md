@@ -13,7 +13,7 @@
 
 *Author: **Ali Haider** —-
 
----
+----
 
 ![PassportOCR Demo](https://raw.githubusercontent.com/Haider4300/Intelligent-Passport-OCR-Information-Extraction-System/main/frontend/src/assets/hero.png)
 
