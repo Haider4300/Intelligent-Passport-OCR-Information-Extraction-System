@@ -11,7 +11,7 @@
 [![EasyOCR](https://img.shields.io/badge/EasyOCR-1.7-green?style=flat-square)](https://github.com/JaidedAI/EasyOCR)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
-*Author: **Ali Haider** —-
+*Author: **Ali Haider** —--
 
 ----
 
